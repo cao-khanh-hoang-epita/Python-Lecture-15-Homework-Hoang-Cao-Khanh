@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .recipe-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .recipe-card {
+            width: 230px;
+            height: 300px;
+            background: #fff;
+            border: 2px solid #323232;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px;
+            gap: 10px;
+            box-shadow: 4px 4px #323232;
+            margin: 10px;
+        }
+
+        .recipe-card:last-child {
+            justify-content: flex-end;
+        }
+
+        .recipe-card .card-img {
+            transition: all 0.5s;
+            display: flex;
+            justify-content: center;
+            background-color: #228b22;
+            border-radius: 5px 5px 0 0;
+            height: 100px;
+            width: 100%;
+        }
+
+        .recipe-card .card-info {
+            padding: 10px;
+            height: 45%;
+        }
+
+        .recipe-card svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .recipe-card .card-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+            background-color: #fff;
+        }
+
+        /* Text */
+        .recipe-card .text-title {
+            font-weight: 900;
+            font-size: 1.2em;
+            line-height: 1.5;
+            margin: 0; /* Remove margin to bring text closer to the top */
+        }
+
+        .recipe-card .text-body {
+            font-size: .9em;
+            padding-bottom: 1px;
+            margin: 0; /* Remove margin to bring text closer to the top */
+        }
+
+        /* Button */
+        .recipe-card .card-button {
+            border: 2px solid #323232;
+            display: flex;
+            padding: 0.3em 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+        /* Hover */
+        .recipe-card .card-img:hover {
+            transform: translateY(-3px);
+            box-shadow: 4px 4px #2d8cf0;
+        }
+
+        .recipe-card .card-button:hover {
+            border: 2px solid #2d8cf0;
+            background-color: #2d8cf0;
+            color: #fff;
+        }
+
+        /* Search Bar Styles */
+        .searchBox {
+            display: flex;
+            max-width: 230px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: #2f3640;
+            border-radius: 50px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .searchButton {
+            color: white;
+            position: absolute;
+            right: 8px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-2, linear-gradient(90deg, #2AF598 0%, #009EFD 100%));
+            border: 0;
+            display: inline-block;
+            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+        }
+
+        /* Hover effect for search button */
+        .searchButton:hover {
+            color: #fff;
+            background-color: #1A1A1A;
+            box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
+            transform: translateY(-3px);
+        }
+
+        /* Button pressing effect for search button */
+        .searchButton:active {
+            box-shadow: none;
+            transform: translateY(0);
+        }
+
+        .searchInput {
+            border: none;
+            background: none;
+            outline: none;
+            color: white;
+            font-size: 15px;
+            padding: 24px 46px 24px 26px;
+            width: 100%;
+        }
+
+                /* Styling for the Cart Button */
+        .stylish-cart-button {
+            padding: 20px 60px;
+            background-color: #000;
+            border: none;
+            font-size: 18px;
+            position: relative;
+            transition: 500ms;
+        }
+
+        .stylish-cart-button span {
+            color: gray;
+            position: relative;
+            transition: 500ms;
+            transition-delay: 500ms;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .stylish-cart-button:before {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 0%;
+            left: 50%;
+            right: 50%;
+            top: 50%;
+            bottom: 50%;
+            transition: 500ms;
+            transition-delay: 500ms;
+            background-color: red;
+            box-shadow: 0 0 10px red, 0 0 30px red, 0 0 50px red;
+        }
+
+        .stylish-cart-button div {
+            transition: 500ms;
+            position: absolute;
+            background-color: red;
+            box-shadow: 0 0 15px red, 0 0 30px red, 0 0 50px red;
+        }
+
+        .stylish-cart-button .top {
+            width: 15px;
+            height: 2px;
+            top: 0;
+            left: 0;
+        }
+
+        .stylish-cart-button .bottom {
+            width: 15px;
+            height: 2px;
+            bottom: 0;
+            right: 0;
+        }
+
+        .stylish-cart-button .left {
+            width: 2px;
+            height: 15px;
+            top: 0;
+            left: 0;
+        }
+
+        .stylish-cart-button .right {
+            width: 2px;
+            height: 15px;
+            bottom: 0;
+            right: 0;
+        }
+
+        .stylish-cart-button:hover {
+            color: #000;
+        }
+
+        .stylish-cart-button:hover span {
+            color: #000;
+        }
+
+        .stylish-cart-button:hover:before {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .stylish-cart-button:hover .top, 
+        .stylish-cart-button:hover .bottom {
+            width: 100%;
+        }
+
+        .stylish-cart-button:hover .left,
+        .stylish-cart-button:hover .right {
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, NOBODY !!</h1>
+        
+        <h2>recipe List</h2>
+
+        <!-- Search Bar -->
+        <div class="searchBox">
+            <input type="text" class="searchInput" id="searchInput" placeholder="Search recipes by name...">
+            <button class="searchButton" onclick="filterrecipes()">Search</button>
+        </div>
+        
+
+        <!-- recipe List -->
+        <div class="recipe-container" id="recipeContainer">
+            <!-- recipe items will be displayed here -->
+            {% for recipe in recipes %}
+                <div class="recipe-card">
+                    <div class="card-img">
+                        <img src="{{ url_for('static', filename='uploads/' + recipe.image_name) }}" alt="{{ recipe.title }}">
+                    </div>
+                    <div class="card-info">
+                        <h3 class="text-title">{{ recipe.dish_name }}</h3>
+                        <p class="text-body">Description: {{ recipe.description }}</p>
+                        <p class="text-body">Wage: ${{ recipe.wage }} per hour</p>
+                    </div>
+                    <div class="card-footer">
+                        <script>
+                            // Function to log a message when the form is submitted
+                            function logAddToCart() {
+                                console.log('recipe added to cart successfully');
+                            }
+                        </script>
+                    </div>
+                </div>
+            {% endfor %}
+        
+        </div>
+        <!-- Stylish Cart Button -->
+        <button class="stylish-cart-button" onclick="window.location.href='/login'">
+            <span>LOGIN</span>
+            <div class="top"></div>
+            <div class="bottom"></div>
+            <div class="left"></div>
+            <div class="right"></div>
+        </button>
+
+    </div>
+
+    <script>
+        // Function to filter recipes based on the search input
+        function filterrecipes() {
+            var searchInput = document.getElementById('searchInput').value.toLowerCase();
+            var recipeContainer = document.getElementById('recipeContainer');
+            var recipeCards = recipeContainer.getElementsByClassName('recipe-card');
+
+            for (var i = 0; i < recipeCards.length; i++) {
+                var recipeName = recipeCards[i].getElementsByClassName('text-title')[0].textContent.toLowerCase();
+                if (recipeName.includes(searchInput)) {
+                    recipeCards[i].style.display = 'inline-block';
+                } else {
+                    recipeCards[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
