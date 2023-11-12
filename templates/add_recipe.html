@@ -1,21 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add recipe</title>
+    <title>Add Recipe</title>
 </head>
 <body>
-    <h1>Add recipe</h1>
-    <form method="POST">
-        <label for="dish_name">recipe Name:</label>
-        <input type="text" name="dish_name" required><br>
+    <h1>Add Recipe</h1>
+    <form method="POST" action="{{ url_for('add_recipe') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <label for="dish_name">Recipe Name:</label>
+        {{ form.dish_name(class="form-control", placeholder="Enter recipe name", required=True) }}
+        {% if form.dish_name.errors %}
+            <span class="text-danger">{{ form.dish_name.errors[0] }}</span>
+        {% endif %}<br>
 
         <label for="description">Description:</label>
-        <textarea name="description" required></textarea><br>
+        {{ form.description(class="form-control", placeholder="Enter recipe description", required=True) }}
+        {% if form.description.errors %}
+            <span class="text-danger">{{ form.description.errors[0] }}</span>
+        {% endif %}<br>
 
         <label for="origin">Origin:</label>
-        <textarea name="origin" required></textarea><br>
+        {{ form.origin(class="form-control", placeholder="Enter recipe origin", required=True) }}
+        {% if form.origin.errors %}
+            <span class="text-danger">{{ form.origin.errors[0] }}</span>
+        {% endif %}<br>
 
-        <input type="submit" value="Add recipe">
+        <label for="image">Image:</label>
+        {{ form.image(class="form-control", required=False) }}
+        {% if form.image.errors %}
+            <span class="text-danger">{{ form.image.errors[0] }}</span>
+        {% endif %}<br>
+
+        <input type="submit" value="Add Recipe">
     </form>
 </body>
 </html>

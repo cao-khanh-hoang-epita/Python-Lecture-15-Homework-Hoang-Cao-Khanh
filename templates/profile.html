@@ -278,12 +278,13 @@
             {% for recipe in recipes %}
                 <div class="recipe-card">
                     <div class="card-img">
-                        <img src="{{ url_for('static', filename='uploads/' + recipe.image_name) }}" alt="{{ recipe.title }}">
+                        <img src="{{ url_for('static', filename='uploads/' + recipe.image) }}" alt="{{ recipe.dish_name }}">
                     </div>
                     <div class="card-info">
                         <h3 class="text-title">{{ recipe.dish_name }}</h3>
                         <p class="text-body">Description: {{ recipe.description }}</p>
                         <p class="text-body">Origin: {{ recipe.origin }} </p>
+                        <p class="text-body">Image: {{ recipe.image }} </p>
                     </div>
                     <div class="card-footer">
                         <form method="POST" action="{{ url_for('add_to_cart', recipe_id=recipe['_id']) }}" onsubmit="logAddToCart()">

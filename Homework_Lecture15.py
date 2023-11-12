@@ -13,8 +13,12 @@ from flask_caching import Cache
 from dotenv import load_dotenv
 import logging
 import os
+from werkzeug.utils import secure_filename
+from flask_wtf.file import FileField, FileAllowed
 from flask_mail import Mail,Message
-
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField,FileField
+from wtforms.validators import DataRequired
 
 load_dotenv()
 app = Flask(__name__)
@@ -39,7 +43,7 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 def send_upload_confirmation_email(user):
     try:
         msg = Message(_('Upload Confirmation'), sender='recipe-website@noreply.com', recipients=[user.email])
@@ -100,7 +104,6 @@ def create_table(db):
                        ('thanhthu', '16112004', 'luuthanhthu16112004@gmail.com', 1))  # 1 represents an admin user
         db.commit()
         cursor.close()
-
 
 class User(UserMixin):
     def __init__(self, id):
@@ -297,27 +300,52 @@ def admin_dashboard():
     else :
         return redirect(url_for('profile'))
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/add_recipe', methods=['GET', 'POST'])
 @login_required
 def add_recipe():
-    if request.method == 'POST':
-        dish_name = request.form['dish_name']
-        description = request.form['description']
-        origin = request.form['origin']
+    form = RecipeForm()
 
-        # Insert the recipe details into the database
+    if form.validate_on_submit():
+        dish_name = form.dish_name.data
+        description = form.description.data
+        origin = form.origin.data
+
+        # Check if the post request has the file part
+        if 'image' in request.files:
+            image = form.image.data
+
+            # If the user does not select a file, the browser submits an empty file without a filename
+            if image.filename != '' and allowed_file(image.filename):
+                # Save the uploaded file to the specified folder
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                # Handle invalid file types or empty file
+                flash('Invalid file format. Please upload an image file.', 'danger')
+                return redirect(url_for('add_recipe'))
+
+        # Continue with saving recipe details to the database
+        # ...
+
+        # Insert the recipe details into the database, including the image filename
         recipe_details = {
             'dish_name': dish_name,
             'description': description,
-            'origin': origin
+            'origin': origin,
+            'image': filename  # Add the image filename to the recipe details
         }
         collection.insert_one(recipe_details)
+
         send_upload_confirmation_email(current_user)
-        flash('recipe added successfully', 'success')
+        flash('Recipe added successfully', 'success')
         return redirect(url_for('profile'))
 
-    return render_template('add_recipe.html', user=current_user)
-
+    return render_template('add_recipe.html', user=current_user, form=form)
 @app.route('/edit_recipe/<recipe_id>', methods=['GET', 'POST'])
 @login_required
 def edit_recipe(recipe_id):
@@ -379,6 +407,13 @@ class ContactInfoForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     contact_information = StringField('Contact Information', validators=[DataRequired()])
     
+class RecipeForm(FlaskForm):
+    dish_name = StringField('Dish Name', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    origin = StringField('Origin', validators=[DataRequired()])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg', 'gif'], 'Images only!')])  # Add this line for the image field
+    submit = SubmitField('Add Recipe')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -454,6 +489,9 @@ def not_found_error(error):
 def not_found_error(error):
     return render_template('home.html'), 500
 
+@app.route('/showimage')
+def index():
+    return render_template('showimage.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

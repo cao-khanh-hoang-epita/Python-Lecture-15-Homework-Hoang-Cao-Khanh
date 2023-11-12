@@ -278,12 +278,15 @@
             {% for recipe in recipes %}
                 <div class="recipe-card">
                     <div class="card-img">
-                        <img src="{{ url_for('static', filename='uploads/' + recipe.image_name) }}" alt="{{ recipe.title }}">
+                        <img src="{{ recipe.image }}" alt="{{ recipe.dish_name }}">
                     </div>
                     <div class="card-info">
                         <h3 class="text-title">{{ recipe.dish_name }}</h3>
                         <p class="text-body">Description: {{ recipe.description }}</p>
-                        <p class="text-body">Wage: ${{ recipe.wage }} per hour</p>
+                        <p class="text-body">Origin : {{ recipe.origin }} </p>
+                        <p class="text-body">Image : {{ recipe.image }} </p>
+                        <img src="{{ recipe.image }}" alt="{{ recipe.dish_name }}">
+
                     </div>
                     <div class="card-footer">
                         <script>
@@ -325,5 +328,12 @@
             }
         }
     </script>
+    <body>
+        <h1>Image Example</h1>
+    
+        <!-- Replace 'image.jpg' with the actual file name and adjust the path accordingly -->
+        <img src="pho.jpg" alt="Description of the image">
+    
+    </body>
 </body>
 </html>
